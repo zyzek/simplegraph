@@ -1,3 +1,8 @@
+/* Find the intersection points of two circles.
+ * 
+ * Circles are centred at (x0, y0), and (x1, y1) with radii r0, r1.
+ * If there are infinite, or no intersection points, the output array will be empty.
+ */
 function circleIntersections(x0, y0, r0, x1, y1, r1) {
     let d = Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
 
@@ -16,6 +21,9 @@ function circleIntersections(x0, y0, r0, x1, y1, r1) {
     let p0 = {x: x0 + (b0*x - h*y)/d, y: y0 + (b0*y + h*x)/d};
     let p1 = {x: x0 + (b0*x + h*y)/d, y: y0 + (b0*y - h*x)/d};
     
+    if (h == 0) {
+	return [p0];
+    }
     return [p0, p1];
 }
 
@@ -246,7 +254,7 @@ class RenderSettings {
 	this.arrow_wid_frac = 0.125;
 	this.font = "10px sans-serif";
 	this.edge_label_offset = 0;
-	this.loop_label_rad_mul = 2;
+	this.loop_label_rad_mul = 1.5;
     }
 
     applyTransform(pos) {

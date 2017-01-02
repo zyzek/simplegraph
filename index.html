@@ -10,8 +10,9 @@ var canvas = document.getElementById("mycanvas");
 var drawer = new GraphDrawer(canvas);
 
 drawer.settings.node_radius = 2;
-drawer.settings.edge_label_offset = 1.5;
+drawer.settings.edge_label_offset = 1.2;
 drawer.settings.font = "20px sans-serif";
+drawer.settings.loop_label_rad_mul = 1.8;
 
 drawer.addNode("a", 0, 0, "a");
 drawer.addNode("b", 10, 0, "b", "double");
