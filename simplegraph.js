@@ -129,20 +129,32 @@ class Edge {
 	    this.drawEdge(ctx, settings, anti_parallel);
 	}
     }
+
+    getSelfLoopPos(settings) {
+         let node_rad = settings.node_radius;
+	 let node_pos = this.head.pos;
+         let loop_rad = settings.loop_radius_frac*node_rad;
+         let loop_unit = {x: Math.cos(this.loop_angle),
+		  	  y: Math.sin(this.loop_angle)};
+	 let loop_pos = {x: loop_unit.x*node_rad + node_pos.x,
+	                 y: loop_unit.y*node_rad + node_pos.y};
+	 let lab_mul = settings.loop_label_rad_mul;
+	 let label_pos = {x: loop_unit.x*(node_rad + loop_rad*lab_mul) + node_pos.x,
+			  y: loop_unit.y*(node_rad + loop_rad*lab_mul) + node_pos.y};
+	 
+         return {loop: loop_pos, label: label_pos};
+    }
        
     drawSelfLoop(ctx, settings) {
         ctx.save();
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
 	let scaled_node_rad = settings.scaledRad();
-	let node_pos = settings.applyTransform(this.head.pos);
 	let loop_rad = settings.loop_radius_frac*scaled_node_rad;
-	let loop_unit = {x: Math.cos(this.loop_angle),
-			 y: Math.sin(this.loop_angle)};
-	let loop_pos = {x: loop_unit.x*scaled_node_rad + node_pos.x,
-	                y: loop_unit.y*scaled_node_rad + node_pos.y};
-	let label_pos = {x: loop_unit.x*(scaled_node_rad + loop_rad*2) + node_pos.x,
-			 y: loop_unit.y*(scaled_node_rad + loop_rad*2) + node_pos.y};
+	let node_pos = settings.applyTransform(this.head.pos);
+	let loop_positions = this.getSelfLoopPos(settings);
+	let loop_pos = settings.applyTransform(loop_positions.loop);
+	let label_pos = settings.applyTransform(loop_positions.label);
 	
         ctx.beginPath();
         ctx.arc(loop_pos.x, loop_pos.y, 
@@ -234,6 +246,7 @@ class RenderSettings {
 	this.arrow_wid_frac = 0.125;
 	this.font = "10px sans-serif";
 	this.edge_label_offset = 0;
+	this.loop_label_rad_mul = 2;
     }
 
     applyTransform(pos) {
@@ -285,6 +298,10 @@ class GraphDrawer {
             tail.in_edges.push(edge);
             this.edges.push(edge);
 	    
+            if (head == tail) {
+		this.addSelfLoop(hname, label);
+            }
+	    
             return edge;
         }
     }
@@ -292,6 +309,18 @@ class GraphDrawer {
     addSelfLoop(name, label="", angle=Math.PI/2) {
 	let edge = this.addEdge(name, name, label);
 	edge.loop_angle = angle;
+
+	let loop_positions = edge.getSelfLoopPos(this.settings);
+	let loop_pos = loop_positions.loop;
+	let label_pos = loop_positions.label;
+        let loop_rad = this.settings.loop_radius_frac*this.settings.node_radius;
+
+        this.rend_bound_positions.push({x: loop_pos.x + loop_rad, y: loop_pos.y});
+        this.rend_bound_positions.push({x: loop_pos.x - loop_rad, y: loop_pos.y});
+        this.rend_bound_positions.push({x: loop_pos.x, y: loop_pos.y + loop_rad});
+        this.rend_bound_positions.push({x: loop_pos.x, y: loop_pos.y - loop_rad});
+        this.rend_bound_positions.push({x: label_pos.x, y: label_pos.y});
+
 	return edge;
     }
     

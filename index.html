@@ -18,12 +18,12 @@ drawer.addNode("b", 10, 0, "b", "double");
 drawer.addNode("c", 5, 5*Math.sqrt(3), "c");
 drawer.addEdge("a", "c", "a1");
 drawer.addEdge("c", "a", "a2");
-drawer.addEdge("b", "b", "a3");
+drawer.addSelfLoop("b", "a3", -3*Math.PI/4);
 
 drawer.addNode("d", 0, 15);
 drawer.addNode("e", 10, 15);
 drawer.addNode("f", 20, 15, "", "double");
-drawer.addSelfLoop("e", "yo", -Math.PI/2);
+drawer.addEdge("e", "e", "yo");
 drawer.addEdge("d", "e");
 drawer.addEdge("e", "f");
 drawer.addEdge("f", "e", "rev");
