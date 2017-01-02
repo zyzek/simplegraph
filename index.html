@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+<script src="simplegraph.js"></script>
+
+<body>
+<canvas id="mycanvas" height="600" width="800" style="border: 0px solid;">
+<script>
+var canvas = document.getElementById("mycanvas");
+var drawer = new GraphDrawer(canvas);
+
+drawer.settings.node_radius = 2;
+drawer.settings.edge_label_offset = 1.5;
+drawer.settings.font = "20px sans-serif";
+
+drawer.addNode("a", 0, 0, "a");
+drawer.addNode("b", 10, 0, "b", "double");
+drawer.addNode("c", 5, 5*Math.sqrt(3), "c");
+drawer.addEdge("a", "c", "a1");
+drawer.addEdge("c", "a", "a2");
+drawer.addEdge("b", "b", "a3");
+
+drawer.addNode("d", 0, 15);
+drawer.addNode("e", 10, 15);
+drawer.addNode("f", 20, 15, "", "double");
+drawer.addSelfLoop("e", "yo", -Math.PI/2);
+drawer.addEdge("d", "e");
+drawer.addEdge("e", "f");
+drawer.addEdge("f", "e", "rev");
+drawer.addInEdge("d");
+
+drawer.addNode("g", 20, 5, "new1");
+drawer.addEdge("f", "g", "10");
+
+drawer.addEdge("g", "b", "blah");
+
+drawer.draw();
+
+</script>
+</body>
+
+</html>
